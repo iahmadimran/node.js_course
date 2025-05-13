@@ -31,6 +31,29 @@ app.get('/api/products/:productId', (req, res) => {
 
 app.get('/api/products/:productId/reviews/:reviewId', (req, res) => {
   const { reviewId } = req.params;
+  res.send("hello world.")
+})
+
+app.get('/api/query', (req, res) => {
+  const { search, limit } = req.query;
+
+  let searchedProducts = [...products]
+
+  if (search) {
+    searchedProducts = searchedProducts.filter((product) => (
+      product.name.startsWith(search)
+    ))
+  }
+
+  if (limit) {
+    searchedProducts = searchedProducts.splice(0, Number(limit))
+  }
+
+  if (searchedProducts.length < 1) {
+    return res.status(200).json({ success: true, data: [] })
+  }
+
+  return res.status(200).json(searchedProducts)
 })
 
 app.listen(5000, () => {
